@@ -299,17 +299,24 @@
       color: var(--text-muted);
     }
 
-    /* BOTTOM: TRANSPORT BAR */
+        /* TRANSPORT BAR (now sits under artwork) */
     .controls-bar {
-      padding: 10px 18px;
-      border-top: 2px solid #262930;
+      margin-top: 16px;
+      width: 100%;
+      max-width: 420px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid #262930;
       background:
         linear-gradient(180deg, #201010 0, #090304 55%, #1f0f0f 100%);
       display: flex;
       align-items: center;
       gap: 12px;
-      box-shadow: 0 -10px 26px rgba(0,0,0,0.9);
+      box-shadow:
+        0 10px 22px rgba(0,0,0,0.8),
+        inset 0 0 10px rgba(0,0,0,0.6);
     }
+
 
     .btn {
       border: none;
@@ -614,14 +621,46 @@
       </ul>
     </aside>
 
-    <!-- CENTER: ARTWORK -->
+        <!-- CENTER: ARTWORK + CONTROLS -->
     <section class="art-panel">
       <div class="art-frame">
         <img id="artImage" src="art/00-heavy-metal-holy-bible-cover.jpg" alt="Track artwork">
       </div>
+
       <div class="track-meta">
         <div id="trackTitle" class="track-meta-title">Select a Track</div>
         <div id="trackRef" class="track-meta-ref">Heavy Metal Holy Bible</div>
+      </div>
+
+      <!-- CONTROLS: moved up closer to the action -->
+      <div class="controls-bar">
+        <!-- PREV -->
+        <button class="btn amplitude-prev">&laquo;</button>
+
+        <!-- GLOBAL PLAY/PAUSE -->
+        <button class="btn play-pause amplitude-play-pause">
+          ▶︎ / ❚❚
+        </button>
+
+        <!-- NEXT -->
+        <button class="btn amplitude-next">&raquo;</button>
+
+        <div class="timeline">
+          <span class="amplitude-current-time">0:00</span>
+          <input type="range"
+                 class="amplitude-song-slider"
+                 step=".1"/>
+          <span class="amplitude-duration-time">0:00</span>
+        </div>
+
+        <div class="volume">
+          🔊
+          <input type="range"
+                 class="amplitude-volume-slider"
+                 step=".01"
+                 min="0"
+                 max="1" />
+        </div>
       </div>
     </section>
 
@@ -641,37 +680,6 @@
     </aside>
 
   </div>
-
-  <!-- BOTTOM: CONTROLS -->
-  <footer class="controls-bar">
-    <!-- PREV -->
-    <button class="btn amplitude-prev">&laquo;</button>
-
-    <!-- GLOBAL PLAY/PAUSE -->
-    <button class="btn play-pause amplitude-play-pause">
-      ▶︎ / ❚❚
-    </button>
-
-    <!-- NEXT -->
-    <button class="btn amplitude-next">&raquo;</button>
-
-    <div class="timeline">
-      <span class="amplitude-current-time">0:00</span>
-      <input type="range"
-             class="amplitude-song-slider"
-             step=".1"/>
-      <span class="amplitude-duration-time">0:00</span>
-    </div>
-
-    <div class="volume">
-      🔊
-      <input type="range"
-             class="amplitude-volume-slider"
-             step=".01"
-             min="0"
-             max="1" />
-    </div>
-  </footer>
 </div>
 
 <script>
