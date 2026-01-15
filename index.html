@@ -8,16 +8,17 @@
   <!-- Amplitude.js (audio engine) -->
   <script src="https://cdn.jsdelivr.net/npm/amplitudejs@5.3.2/dist/amplitude.min.js"></script>
 
-  <style>
+    <style>
     :root {
-      --bg: #111111;
-      --bg-panel: #1a1a1a;
-      --bg-panel-alt: #202020;
-      --border: #3b2b24;
-      --accent: #d24b28;
-      --accent-soft: #a3351a;
-      --text-main: #f5f2e9;
-      --text-muted: #b4aaa0;
+      --frame-bg: #050506;
+      --stone-dark: #0a0b0d;
+      --stone-mid: #16181c;
+      --stone-light: #2c3139;
+      --blood: #b13419;
+      --blood-deep: #701808;
+      --text-main: #f3efe6;
+      --text-muted: #a79c8f;
+      --accent-soft: #d2b48c;
       --font-main: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
@@ -26,113 +27,152 @@
     body {
       margin: 0;
       min-height: 100vh;
-      background: radial-gradient(circle at top, #2a1c16 0, #070707 55%);
-      color: var(--text-main);
-      font-family: var(--font-main);
+      background:
+        radial-gradient(circle at top, #3b1a10 0, #050507 35%, #010203 100%);
       display: flex;
+      align-items: center;
       justify-content: center;
-      align-items: stretch;
+      font-family: var(--font-main);
+      color: var(--text-main);
     }
 
     .app-shell {
       width: 100%;
-      max-width: 1200px;
-      margin: 24px;
-      background: #050505;
-      border-radius: 12px;
-      box-shadow: 0 22px 50px rgba(0,0,0,0.9);
-      border: 1px solid #3b2b24;
+      max-width: 1180px;
+      background:
+        radial-gradient(circle at top, rgba(255,255,255,0.06) 0, transparent 40%),
+        linear-gradient(180deg, #15171b 0, #050506 55%, #15171b 100%);
+      border-radius: 10px;
+      border: 2px solid #272a31;
+      box-shadow:
+        0 32px 60px rgba(0,0,0,0.95),
+        inset 0 0 40px rgba(0,0,0,0.85);
+      overflow: hidden;
       display: flex;
       flex-direction: column;
-      overflow: hidden;
     }
 
     .app-header {
-      padding: 16px 20px 10px;
-      border-bottom: 1px solid #26201b;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0.04), transparent),
-        radial-gradient(circle at top, #4b3424 0, #120d0a 55%);
+      padding: 14px 24px 10px;
       text-align: center;
+      border-bottom: 1px solid #2d3037;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.07), rgba(0,0,0,0.35)),
+        radial-gradient(circle at top, #2b1c14 0, #090a0d 60%);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.85);
+      position: relative;
     }
 
+    .app-header::before,
+    .app-header::after {
+      content: "";
+      position: absolute;
+      top: 16px;
+      width: 80px;
+      height: 18px;
+      background: radial-gradient(circle at center, rgba(255,255,255,0.18), transparent 65%);
+      opacity: 0.25;
+    }
+    .app-header::before { left: 26px; }
+    .app-header::after { right: 26px; }
+
     .logo-title {
-      font-size: 30px;
-      letter-spacing: 0.2em;
+      font-size: 32px;
+      letter-spacing: 0.35em;
       text-transform: uppercase;
-      font-weight: 800;
-      color: #e4e0da;
-      text-shadow: 0 0 10px rgba(0,0,0,0.9);
+      font-weight: 900;
+      color: #f7f3ea;
+      text-shadow:
+        0 0 12px rgba(0,0,0,0.95),
+        0 0 26px rgba(255,255,255,0.35);
     }
 
     .logo-sub {
-      margin-top: 4px;
-      font-size: 14px;
-      letter-spacing: 0.16em;
+      margin-top: 2px;
+      font-size: 13px;
+      letter-spacing: 0.24em;
       text-transform: uppercase;
-      color: var(--text-muted);
+      color: var(--accent-soft);
     }
 
     .main-layout {
       flex: 1;
       display: grid;
-      grid-template-columns: 260px minmax(0, 1fr) 280px;
-      grid-auto-rows: minmax(0, 1fr);
-      gap: 0;
-      background: radial-gradient(circle at center, #1b1310 0, #050505 70%);
+      grid-template-columns: 260px minmax(0, 1fr) 300px;
+      background:
+        radial-gradient(circle at center, #17191f 0, #050506 60%);
     }
 
-    /* Track list */
+    /* LEFT: TRACK LIST (stone column) */
     .panel {
-      border-right: 1px solid #231a16;
-      background: linear-gradient(180deg, #16110e 0, #080606 100%);
+      border-right: 2px solid #262930;
+      background:
+        linear-gradient(180deg, #14151a 0, #050507 70%);
       display: flex;
       flex-direction: column;
+      box-shadow: inset -6px 0 18px rgba(0,0,0,0.75);
     }
 
     .panel-header {
-      padding: 10px 14px;
-      font-size: 13px;
-      letter-spacing: 0.18em;
+      padding: 9px 14px;
+      font-size: 12px;
+      letter-spacing: 0.22em;
       text-transform: uppercase;
-      border-bottom: 1px solid #231a16;
-      color: var(--text-muted);
+      color: var(--text-main);
+      border-bottom: 1px solid #2b2f38;
+      background:
+        linear-gradient(180deg, #1e2027 0, #13151a 60%, #0a0b0e 100%);
+      box-shadow:
+        0 2px 8px rgba(0,0,0,0.85),
+        inset 0 0 12px rgba(255,255,255,0.03);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .panel-header span {
+      font-size: 11px;
+      opacity: 0.7;
     }
 
     .track-list {
       list-style: none;
       margin: 0;
-      padding: 4px 0;
+      padding: 6px 0 10px;
       overflow-y: auto;
       font-size: 13px;
     }
 
     .track-list li {
-      padding: 10px 14px;
-      border-bottom: 1px solid #1a1410;
+      padding: 9px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.03);
       cursor: pointer;
       display: flex;
       flex-direction: column;
       gap: 2px;
-      background: transparent;
-      transition: background 0.15s, color 0.15s;
+      background: radial-gradient(circle at left, rgba(255,255,255,0.05), transparent 55%);
+      transition: background 0.15s, color 0.15s, transform 0.05s;
     }
 
     .track-list li:hover {
-      background: rgba(210,75,40,0.18);
+      background:
+        linear-gradient(90deg, rgba(177,52,25,0.5), transparent 80%);
+      transform: translateX(1px);
     }
 
     .track-list li.amplitude-active-song-container {
-      background: linear-gradient(90deg, rgba(210,75,40,0.5), transparent);
+      background:
+        linear-gradient(90deg, rgba(177,52,25,0.9), transparent 80%);
+      box-shadow: inset 0 0 12px rgba(0,0,0,0.8);
       color: var(--text-main);
     }
 
     .track-index {
-      font-weight: 600;
-      color: var(--text-muted);
+      font-weight: 700;
+      color: var(--accent-soft);
       font-size: 11px;
       text-transform: uppercase;
-      letter-spacing: 0.15em;
+      letter-spacing: 0.18em;
     }
 
     .track-title {
@@ -140,28 +180,34 @@
     }
 
     .track-ref {
-      font-size: 12px;
+      font-size: 11px;
       color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
     }
 
-    /* Center artwork panel */
+    /* CENTER: ARTWORK */
     .art-panel {
-      padding: 16px;
+      padding: 18px 18px 12px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
+      background:
+        radial-gradient(circle at top, rgba(255,255,255,0.05), transparent 55%);
     }
 
     .art-frame {
       width: 100%;
-      max-width: 420px;
-      aspect-ratio: 4 / 3;
-      border-radius: 10px;
+      max-width: 460px;
+      aspect-ratio: 3 / 4;
+      border-radius: 6px;
       overflow: hidden;
-      border: 2px solid #3b2b24;
-      box-shadow: 0 14px 35px rgba(0,0,0,0.85);
-      background: #111;
+      border: 3px solid #2f3138;
+      box-shadow:
+        0 18px 38px rgba(0,0,0,0.95),
+        0 0 26px rgba(0,0,0,0.9);
+      background: #050506;
     }
 
     .art-frame img {
@@ -178,94 +224,130 @@
 
     .track-meta-title {
       font-size: 18px;
-      font-weight: 700;
-      letter-spacing: 0.12em;
+      font-weight: 800;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
     }
 
     .track-meta-ref {
       margin-top: 4px;
-      font-size: 13px;
-      color: var(--text-muted);
+      font-size: 12px;
+      color: var(--accent-soft);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
     }
 
-    /* Verse panel */
+    /* RIGHT: BIBLE VERSE PANEL */
     .verse-panel {
-      border-left: 1px solid #231a16;
-      background: radial-gradient(circle at top, #201712 0, #050404 65%);
+      border-left: 2px solid #262930;
+      background:
+        linear-gradient(180deg, #15161d 0, #050506 70%);
       display: flex;
       flex-direction: column;
+      box-shadow: inset 6px 0 18px rgba(0,0,0,0.8);
+    }
+
+    .verse-panel .panel-header {
+      justify-content: flex-start;
+      gap: 10px;
+    }
+
+    .verse-panel .panel-header::before {
+      content: "✠";
+      font-size: 13px;
+      opacity: 0.85;
+      color: var(--accent-soft);
     }
 
     .verse-body {
-      padding: 14px 16px 16px;
+      padding: 14px 18px 18px;
       font-size: 14px;
-      line-height: 1.65;
+      line-height: 1.7;
     }
 
     .verse-label {
-      font-size: 13px;
-      letter-spacing: 0.18em;
+      font-size: 11px;
+      letter-spacing: 0.22em;
       text-transform: uppercase;
-      color: var(--text-muted);
+      color: var(--accent-soft);
       margin-bottom: 6px;
     }
 
     .verse-ref {
       font-weight: 700;
       margin-bottom: 8px;
+      color: #f7f3ea;
     }
 
     .verse-text {
       font-style: italic;
-      color: #e8e1d7;
+      color: #e4ded2;
     }
 
     .verse-notes {
       margin-top: 10px;
-      font-size: 13px;
+      font-size: 12px;
       color: var(--text-muted);
     }
 
-    /* Bottom controls */
+    /* BOTTOM: TRANSPORT BAR */
     .controls-bar {
-      padding: 10px 16px;
-      border-top: 1px solid #2a1c15;
-      background: linear-gradient(180deg, #1a120e 0, #070403 100%);
+      padding: 10px 18px;
+      border-top: 2px solid #262930;
+      background:
+        linear-gradient(180deg, #201010 0, #090304 55%, #1f0f0f 100%);
       display: flex;
       align-items: center;
       gap: 12px;
+      box-shadow: 0 -10px 26px rgba(0,0,0,0.9);
     }
 
     .btn {
       border: none;
-      background: #231712;
-      color: var(--text-main);
+      background:
+        radial-gradient(circle at top, rgba(255,255,255,0.15), transparent 60%),
+        linear-gradient(180deg, #363940 0, #17191e 55%, #090a0d 100%);
+      color: #f5f2e9;
       padding: 6px 9px;
       border-radius: 4px;
       cursor: pointer;
-      font-size: 13px;
+      font-size: 14px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       min-width: 32px;
-      transition: background 0.15s, transform 0.08s;
+      box-shadow:
+        0 2px 4px rgba(0,0,0,0.8),
+        inset 0 0 4px rgba(255,255,255,0.05);
+      transition: background 0.12s, transform 0.05s, box-shadow 0.12s;
     }
 
     .btn:hover {
-      background: var(--accent-soft);
+      background:
+        radial-gradient(circle at top, rgba(255,255,255,0.22), transparent 60%),
+        linear-gradient(180deg, #444854 0, #20232b 55%, #0c0d12 100%);
+      box-shadow:
+        0 3px 8px rgba(0,0,0,0.9),
+        inset 0 0 6px rgba(255,255,255,0.08);
     }
 
     .btn:active {
       transform: translateY(1px);
+      box-shadow:
+        0 1px 3px rgba(0,0,0,0.85),
+        inset 0 0 4px rgba(255,255,255,0.05);
     }
 
     .play-pause {
-      background: var(--accent);
-      font-weight: 700;
+      padding: 7px 18px;
       border-radius: 999px;
-      padding: 7px 16px;
-      min-width: 60px;
+      font-weight: 800;
+      font-size: 13px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      background:
+        radial-gradient(circle at top, rgba(255,255,255,0.18), transparent 60%),
+        linear-gradient(180deg, #b13419 0, #701808 60%, #300604 100%);
     }
 
     .timeline {
@@ -283,7 +365,7 @@
       -webkit-appearance: none;
       height: 4px;
       border-radius: 999px;
-      background: #2a211d;
+      background: #312520;
       outline: none;
     }
 
@@ -294,12 +376,14 @@
       width: 12px;
       height: 12px;
       border-radius: 50%;
-      background: var(--accent);
+      background: #f5f2e9;
+      border: 2px solid #b13419;
       cursor: pointer;
+      box-shadow: 0 0 6px rgba(0,0,0,0.7);
     }
 
     .volume {
-      width: 140px;
+      width: 150px;
       display: flex;
       align-items: center;
       gap: 6px;
@@ -316,13 +400,15 @@
       .verse-panel {
         border-right: none;
         border-left: none;
-        border-bottom: 1px solid #231a16;
+        border-bottom: 2px solid #262930;
+        box-shadow: none;
       }
       .art-panel {
         order: -1;
       }
     }
   </style>
+
 </head>
 <body>
 
