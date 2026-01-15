@@ -8,7 +8,7 @@
   <!-- Amplitude.js (audio engine) -->
   <script src="https://cdn.jsdelivr.net/npm/amplitudejs@5.3.2/dist/amplitude.min.js"></script>
 
-    <style>
+  <style>
     :root {
       --frame-bg: #050506;
       --stone-dark: #0a0b0d;
@@ -16,7 +16,7 @@
       --stone-light: #2c3139;
       --blood: #b13419;
       --blood-deep: #701808;
-      --text-main: #f3efe6;
+      --text-main: #f3EFE6;
       --text-muted: #a79c8f;
       --accent-soft: #d2b48c;
       --font-main: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -39,6 +39,7 @@
     .app-shell {
       width: 100%;
       max-width: 1180px;
+      max-height: 95vh; /* keep everything on one screen */
       background:
         radial-gradient(circle at top, rgba(255,255,255,0.06) 0, transparent 40%),
         linear-gradient(180deg, #15171b 0, #050506 55%, #15171b 100%);
@@ -74,7 +75,7 @@
       opacity: 0.25;
     }
     .app-header::before { left: 26px; }
-    .app-header::after { right: 26px; }
+    .app-header::after  { right: 26px; }
 
     .logo-title {
       font-size: 32px;
@@ -101,6 +102,7 @@
       grid-template-columns: 260px minmax(0, 1fr) 300px;
       background:
         radial-gradient(circle at center, #17191f 0, #050506 60%);
+      min-height: 0; /* allow internal columns to scroll instead of body */
     }
 
     /* LEFT: TRACK LIST (stone column) */
@@ -111,6 +113,7 @@
       display: flex;
       flex-direction: column;
       box-shadow: inset -6px 0 18px rgba(0,0,0,0.75);
+      min-height: 0;
     }
 
     .panel-header {
@@ -138,18 +141,19 @@
     .track-list {
       list-style: none;
       margin: 0;
-      padding: 6px 0 10px;
+      padding: 4px 0 6px;  /* tighter */
       overflow-y: auto;
-      font-size: 13px;
+      font-size: 11px;     /* smaller text so all rows fit */
     }
 
     .track-list li {
-      padding: 9px 14px;
+      padding: 3px 10px;   /* less vertical padding */
       border-bottom: 1px solid rgba(255,255,255,0.03);
       cursor: pointer;
       display: flex;
-      flex-direction: column;
-      gap: 2px;
+      flex-direction: row; /* put index + title on one line */
+      align-items: center;
+      gap: 8px;
       background: radial-gradient(circle at left, rgba(255,255,255,0.05), transparent 55%);
       transition: background 0.15s, color 0.15s, transform 0.05s;
     }
@@ -170,20 +174,22 @@
     .track-index {
       font-weight: 700;
       color: var(--accent-soft);
-      font-size: 11px;
+      font-size: 10px;
       text-transform: uppercase;
-      letter-spacing: 0.18em;
+      letter-spacing: 0.16em;
+      flex-shrink: 0;
     }
 
     .track-title {
       font-weight: 600;
+      font-size: 11px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .track-ref {
-      font-size: 11px;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
+      display: none; /* hide extra line to save vertical space */
     }
 
     /* CENTER: ARTWORK */
@@ -195,27 +201,27 @@
       justify-content: space-between;
       background:
         radial-gradient(circle at top, rgba(255,255,255,0.05), transparent 55%);
+      min-height: 0;
     }
 
     .art-frame {
-  width: 100%;
-  max-width: 460px;
-  /* Let the image decide the height so it isn't cropped */
-  border-radius: 6px;
-  overflow: hidden;
-  border: 3px solid #2f3138;
-  box-shadow:
-    0 18px 38px rgba(0,0,0,0.95),
-    0 0 26px rgba(0,0,0,0.9);
-  background: #050506;
-}
+      width: 100%;
+      max-width: 460px;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 3px solid #2f3138;
+      box-shadow:
+        0 18px 38px rgba(0,0,0,0.95),
+        0 0 26px rgba(0,0,0,0.9);
+      background: #050506;
+    }
 
-.art-frame img {
-  display: block;
-  width: 100%;
-  height: auto;          /* keep the original proportions */
-  object-fit: contain;   /* no cropping; letterbox if needed */
-}
+    .art-frame img {
+      display: block;
+      width: 100%;
+      height: auto;          /* keep original proportions */
+      object-fit: contain;   /* no cropping */
+    }
 
     .track-meta {
       margin-top: 16px;
@@ -245,6 +251,7 @@
       display: flex;
       flex-direction: column;
       box-shadow: inset 6px 0 18px rgba(0,0,0,0.8);
+      min-height: 0;
     }
 
     .verse-panel .panel-header {
@@ -263,6 +270,7 @@
       padding: 14px 18px 18px;
       font-size: 14px;
       line-height: 1.7;
+      overflow-y: auto;
     }
 
     .verse-label {
@@ -900,30 +908,30 @@
   // 2) UI updater
   function updateUIFromActiveSong() {
     const meta = Amplitude.getActiveSongMetadata();
-    const artImage = document.getElementById("artImage");
+    const artImage     = document.getElementById("artImage");
     const trackTitleEl = document.getElementById("trackTitle");
-    const trackRefEl = document.getElementById("trackRef");
-    const verseRefEl = document.getElementById("verseRef");
-    const verseTextEl = document.getElementById("verseText");
+    const trackRefEl   = document.getElementById("trackRef");
+    const verseRefEl   = document.getElementById("verseRef");
+    const verseTextEl  = document.getElementById("verseText");
     const verseNotesEl = document.getElementById("verseNotes");
 
     if (!meta) {
-      artImage.src = "art/00-heavy-metal-holy-bible-cover.jpg";
-      trackTitleEl.textContent = "Select a Track";
-      trackRefEl.textContent = "Heavy Metal Holy Bible";
-      verseRefEl.textContent = "—";
-      verseTextEl.textContent = "Select a track to see the key verse and commentary.";
-      verseNotesEl.textContent = "You can fill in specific verses and notes for each song inside the SONGS array in the code.";
+      artImage.src              = "art/00-heavy-metal-holy-bible-cover.jpg";
+      trackTitleEl.textContent  = "Select a Track";
+      trackRefEl.textContent    = "Heavy Metal Holy Bible";
+      verseRefEl.textContent    = "—";
+      verseTextEl.textContent   = "Select a track to see the key verse and commentary.";
+      verseNotesEl.textContent  = "You can fill in specific verses and notes for each song inside the SONGS array in the code.";
       return;
     }
 
-    artImage.src = meta.cover_art_url || "art/00-heavy-metal-holy-bible-cover.jpg";
+    artImage.src             = meta.cover_art_url || "art/00-heavy-metal-holy-bible-cover.jpg";
     trackTitleEl.textContent = meta.name || "";
-    trackRefEl.textContent = meta.verseRef || meta.name || "";
+    trackRefEl.textContent   = meta.verseRef || meta.name || "";
 
-    verseRefEl.textContent = meta.verseKey || "—";
-    verseTextEl.textContent = meta.verseText || "Verse text coming soon.";
-    verseNotesEl.textContent = meta.notes || "You can add commentary for this track in the SONGS array.";
+    verseRefEl.textContent   = meta.verseKey  || "—";
+    verseTextEl.textContent  = meta.verseText || "Verse text coming soon.";
+    verseNotesEl.textContent = meta.notes     || "You can add commentary for this track in the SONGS array.";
   }
 
   // 3) Initialize Amplitude with callbacks
