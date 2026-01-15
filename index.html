@@ -535,7 +535,6 @@
 
 <script>
   // 1) SONG DATA: wired to your renamed mp3 + artwork.
-  // Fill verseKey, verseText, notes later if you want.
   const SONGS = [
     {
       name: "In The Beginning",
@@ -809,12 +808,7 @@
     }
   ];
 
-  // 2) Initialize Amplitude
-  Amplitude.init({
-    songs: SONGS
-  });
-
-  // 3) UI updater
+  // 2) UI updater
   function updateUIFromActiveSong() {
     const meta = Amplitude.getActiveSongMetadata();
     const artImage = document.getElementById("artImage");
@@ -825,7 +819,6 @@
     const verseNotesEl = document.getElementById("verseNotes");
 
     if (!meta) {
-      // fallback to album cover / default text
       artImage.src = "art/00-heavy-metal-holy-bible-cover.jpg";
       trackTitleEl.textContent = "Select a Track";
       trackRefEl.textContent = "Heavy Metal Holy Bible";
@@ -844,14 +837,20 @@
     verseNotesEl.textContent = meta.notes || "You can add commentary for this track in the SONGS array.";
   }
 
-  // Initial state
-  updateUIFromActiveSong();
-
-  // Update whenever the song changes
-  Amplitude.bind("song_change", function () {
-    updateUIFromActiveSong();
+  // 3) Initialize Amplitude with callbacks
+  Amplitude.init({
+    songs: SONGS,
+    callbacks: {
+      song_change: function () {
+        updateUIFromActiveSong();
+      }
+    }
   });
+
+  // Set initial UI (before anything plays)
+  updateUIFromActiveSong();
 </script>
+
 
 </body>
 </html>
