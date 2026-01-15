@@ -981,21 +981,23 @@ function updateUIFromActiveSong() {
 }
 
 
-    // 3) Initialize Amplitude with callbacks
+      // 3) Initialize Amplitude with callbacks
   Amplitude.init({
     songs: SONGS,
     autoplay: false,      // do NOT auto-play on load
+    start_song: null,     // 🔥 do NOT pre-select song 0 as active
     callbacks: {
       song_change: function () {
-        // Only update UI when the user actually changes/plays a song
+        // Update art + text whenever the active song actually changes
         updateUIFromActiveSong();
       }
     }
   });
 
-  // ❌ No initial update call here on purpose.
+  // No initial update call here on purpose.
   // We want to keep the HTML default: 00 artwork + "Select a Track".
 </script>
+
 
 
 </body>
