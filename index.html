@@ -1,0 +1,857 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>BLE4CH – Heavy Metal Holy Bible</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Amplitude.js (audio engine) -->
+  <script src="https://cdn.jsdelivr.net/npm/amplitudejs@5.3.2/dist/amplitude.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #111111;
+      --bg-panel: #1a1a1a;
+      --bg-panel-alt: #202020;
+      --border: #3b2b24;
+      --accent: #d24b28;
+      --accent-soft: #a3351a;
+      --text-main: #f5f2e9;
+      --text-muted: #b4aaa0;
+      --font-main: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #2a1c16 0, #070707 55%);
+      color: var(--text-main);
+      font-family: var(--font-main);
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
+    }
+
+    .app-shell {
+      width: 100%;
+      max-width: 1200px;
+      margin: 24px;
+      background: #050505;
+      border-radius: 12px;
+      box-shadow: 0 22px 50px rgba(0,0,0,0.9);
+      border: 1px solid #3b2b24;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .app-header {
+      padding: 16px 20px 10px;
+      border-bottom: 1px solid #26201b;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.04), transparent),
+        radial-gradient(circle at top, #4b3424 0, #120d0a 55%);
+      text-align: center;
+    }
+
+    .logo-title {
+      font-size: 30px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: #e4e0da;
+      text-shadow: 0 0 10px rgba(0,0,0,0.9);
+    }
+
+    .logo-sub {
+      margin-top: 4px;
+      font-size: 14px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .main-layout {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 260px minmax(0, 1fr) 280px;
+      grid-auto-rows: minmax(0, 1fr);
+      gap: 0;
+      background: radial-gradient(circle at center, #1b1310 0, #050505 70%);
+    }
+
+    /* Track list */
+    .panel {
+      border-right: 1px solid #231a16;
+      background: linear-gradient(180deg, #16110e 0, #080606 100%);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .panel-header {
+      padding: 10px 14px;
+      font-size: 13px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      border-bottom: 1px solid #231a16;
+      color: var(--text-muted);
+    }
+
+    .track-list {
+      list-style: none;
+      margin: 0;
+      padding: 4px 0;
+      overflow-y: auto;
+      font-size: 13px;
+    }
+
+    .track-list li {
+      padding: 10px 14px;
+      border-bottom: 1px solid #1a1410;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      background: transparent;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .track-list li:hover {
+      background: rgba(210,75,40,0.18);
+    }
+
+    .track-list li.amplitude-active-song-container {
+      background: linear-gradient(90deg, rgba(210,75,40,0.5), transparent);
+      color: var(--text-main);
+    }
+
+    .track-index {
+      font-weight: 600;
+      color: var(--text-muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+    }
+
+    .track-title {
+      font-weight: 600;
+    }
+
+    .track-ref {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* Center artwork panel */
+    .art-panel {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .art-frame {
+      width: 100%;
+      max-width: 420px;
+      aspect-ratio: 4 / 3;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 2px solid #3b2b24;
+      box-shadow: 0 14px 35px rgba(0,0,0,0.85);
+      background: #111;
+    }
+
+    .art-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .track-meta {
+      margin-top: 16px;
+      text-align: center;
+    }
+
+    .track-meta-title {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .track-meta-ref {
+      margin-top: 4px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* Verse panel */
+    .verse-panel {
+      border-left: 1px solid #231a16;
+      background: radial-gradient(circle at top, #201712 0, #050404 65%);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .verse-body {
+      padding: 14px 16px 16px;
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .verse-label {
+      font-size: 13px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .verse-ref {
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .verse-text {
+      font-style: italic;
+      color: #e8e1d7;
+    }
+
+    .verse-notes {
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* Bottom controls */
+    .controls-bar {
+      padding: 10px 16px;
+      border-top: 1px solid #2a1c15;
+      background: linear-gradient(180deg, #1a120e 0, #070403 100%);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn {
+      border: none;
+      background: #231712;
+      color: var(--text-main);
+      padding: 6px 9px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 32px;
+      transition: background 0.15s, transform 0.08s;
+    }
+
+    .btn:hover {
+      background: var(--accent-soft);
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .play-pause {
+      background: var(--accent);
+      font-weight: 700;
+      border-radius: 999px;
+      padding: 7px 16px;
+      min-width: 60px;
+    }
+
+    .timeline {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .timeline input[type="range"],
+    .volume input[type="range"] {
+      width: 100%;
+      -webkit-appearance: none;
+      height: 4px;
+      border-radius: 999px;
+      background: #2a211d;
+      outline: none;
+    }
+
+    .timeline input[type="range"]::-webkit-slider-thumb,
+    .volume input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+    }
+
+    .volume {
+      width: 140px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 900px) {
+      .main-layout {
+        grid-template-columns: minmax(0,1fr);
+        grid-template-rows: auto auto auto;
+      }
+      .panel,
+      .verse-panel {
+        border-right: none;
+        border-left: none;
+        border-bottom: 1px solid #231a16;
+      }
+      .art-panel {
+        order: -1;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-shell">
+  <header class="app-header">
+    <div class="logo-title">BLE4CH</div>
+    <div class="logo-sub">Heavy Metal Holy Bible</div>
+  </header>
+
+  <div class="main-layout">
+
+    <!-- LEFT: TRACK LIST -->
+    <aside class="panel">
+      <div class="panel-header">Track List</div>
+      <ul class="track-list">
+        <li class="amplitude-song-container" data-amplitude-song-index="0">
+          <div class="track-index">01</div>
+          <div class="track-title">In The Beginning</div>
+          <div class="track-ref">Track 1</div>
+        </li>
+        <li class="amplitude-song-container" data-amplitude-song-index="1">
+          <div class="track-index">02</div>
+          <div class="track-title">The Fall</div>
+          <div class="track-ref">Track 2</div>
+        </li>
+        <li class="amplitude-song-container" data-amplitude-song-index="2">
+          <div class="track-index">03</div>
+          <div class="track-title">Brothers Keeper</div>
+          <div class="track-ref">Track 3</div>
+        </li>
+        <li class="amplitude-song-container" data-amplitude-song-index="3">
+          <div class="track-index">04</div>
+          <div class="track-title">The Flood</div>
+          <div class="track-ref">Track 4</div>
+        </li>
+        <li class="amplitude-song-container" data-amplitude-song-index="4">
+          <div class="track-index">05</div>
+          <div class="track-title">The Tower</div>
+          <div class="track-ref">Track 5</div>
+        </li>
+        <li class="amplitude-song-container" data-amplitude-song-index="5">
+          <div class="track-index">06</div>
+          <div class="track-title">Fire on Moriah</div>
+          <div class="track-ref">Track 6</div>
+        </li>
+        <li class="amplitude-song-container" data-amplitude-song-index="6">
+          <div class="track-index">07</div>
+          <div class="track-title">Journey of Joseph</div>
+          <div class="track-ref">Track 7</div>
+        </li>
+        <li class="amplitude-song-container" data-amplitude-song-index="7">
+          <div class="track-index">08</div>
+          <div class="track-title">Let My People Go</div>
+          <div class="track-ref">Track 8</div>
+        </li>
+        <li class="amplitude-song-container" data-amplitude-song-index="8">
+          <div class="track-index">09</div>
+          <div class="track-title">The Mountain</div>
+          <div class="track-ref">Track 9</div>
+        </li>
+        <li class="amplitude-song-container" data-amplitude-song-index="9">
+          <div class="track-index">10</div>
+          <div class="track-title">Joshua and Caleb</div>
+          <div class="track-ref">Track 10</div>
+        </li>
+        <li class="amplitude-song-container" data-amplitude-song-index="10">
+          <div class="track-index">11</div>
+          <div class="track-title">Walls Fall</div>
+          <div class="track-ref">Track 11</div>
+        </li>
+        <li class="amplitude-song-container" data-amplitude-song-index="11">
+          <div class="track-index">12</div>
+          <div class="track-title">David and Goliath</div>
+          <div class="track-ref">Track 12</div>
+        </li>
+        <li class="amplitude-song-container" data-amplitude-song-index="12">
+          <div class="track-index">13</div>
+          <div class="track-title">We Will Not Bow</div>
+          <div class="track-ref">Track 13</div>
+        </li>
+        <li class="amplitude-song-container" data-amplitude-song-index="13">
+          <div class="track-index">14</div>
+          <div class="track-title">Lions Den</div>
+          <div class="track-ref">Track 14</div>
+        </li>
+        <li class="amplitude-song-container" data-amplitude-song-index="14">
+          <div class="track-index">15</div>
+          <div class="track-title">The Temple</div>
+          <div class="track-ref">Track 15</div>
+        </li>
+        <li class="amplitude-song-container" data-amplitude-song-index="15">
+          <div class="track-index">16</div>
+          <div class="track-title">Glory</div>
+          <div class="track-ref">Track 16</div>
+        </li>
+        <li class="amplitude-song-container" data-amplitude-song-index="16">
+          <div class="track-index">17</div>
+          <div class="track-title">Wheat and Tares</div>
+          <div class="track-ref">Track 17</div>
+        </li>
+        <li class="amplitude-song-container" data-amplitude-song-index="17">
+          <div class="track-index">18</div>
+          <div class="track-title">The Lost Sheep</div>
+          <div class="track-ref">Track 18</div>
+        </li>
+        <li class="amplitude-song-container" data-amplitude-song-index="18">
+          <div class="track-index">19</div>
+          <div class="track-title">Prodigal Son</div>
+          <div class="track-ref">Track 19</div>
+        </li>
+        <li class="amplitude-song-container" data-amplitude-song-index="19">
+          <div class="track-index">20</div>
+          <div class="track-title">It is Finished</div>
+          <div class="track-ref">Track 20</div>
+        </li>
+        <li class="amplitude-song-container" data-amplitude-song-index="20">
+          <div class="track-index">21</div>
+          <div class="track-title">He is Risen</div>
+          <div class="track-ref">Track 21</div>
+        </li>
+        <li class="amplitude-song-container" data-amplitude-song-index="21">
+          <div class="track-index">22</div>
+          <div class="track-title">Wind and Flame</div>
+          <div class="track-ref">Track 22</div>
+        </li>
+        <li class="amplitude-song-container" data-amplitude-song-index="22">
+          <div class="track-index">23</div>
+          <div class="track-title">Martyr</div>
+          <div class="track-ref">Track 23</div>
+        </li>
+        <li class="amplitude-song-container" data-amplitude-song-index="23">
+          <div class="track-index">24</div>
+          <div class="track-title">Prison Song</div>
+          <div class="track-ref">Track 24</div>
+        </li>
+        <li class="amplitude-song-container" data-amplitude-song-index="24">
+          <div class="track-index">25</div>
+          <div class="track-title">Four Horsemen</div>
+          <div class="track-ref">Track 25</div>
+        </li>
+        <li class="amplitude-song-container" data-amplitude-song-index="25">
+          <div class="track-index">26</div>
+          <div class="track-title">Cast Down</div>
+          <div class="track-ref">Track 26</div>
+        </li>
+        <li class="amplitude-song-container" data-amplitude-song-index="26">
+          <div class="track-index">27</div>
+          <div class="track-title">Faithful and True</div>
+          <div class="track-ref">Track 27</div>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- CENTER: ARTWORK -->
+    <section class="art-panel">
+      <div class="art-frame">
+        <img id="artImage" src="art/00-heavy-metal-holy-bible-cover.jpg" alt="Track artwork">
+      </div>
+      <div class="track-meta">
+        <div id="trackTitle" class="track-meta-title">Select a Track</div>
+        <div id="trackRef" class="track-meta-ref">Heavy Metal Holy Bible</div>
+      </div>
+    </section>
+
+    <!-- RIGHT: VERSE / NOTES -->
+    <aside class="verse-panel">
+      <div class="panel-header">Bible Verse</div>
+      <div class="verse-body">
+        <div id="verseLabel" class="verse-label">Key Passage</div>
+        <div id="verseRef" class="verse-ref">—</div>
+        <div id="verseText" class="verse-text">
+          Select a track to see the key verse and commentary.
+        </div>
+        <div id="verseNotes" class="verse-notes">
+          You can fill in specific verses and notes for each song inside the SONGS array in the code.
+        </div>
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- BOTTOM: CONTROLS -->
+  <footer class="controls-bar">
+    <button class="btn" data-amplitude-prev>&laquo;</button>
+
+    <button class="btn play-pause" data-amplitude-play-pause>
+      ▶︎ / ❚❚
+    </button>
+
+    <button class="btn" data-amplitude-next>&raquo;</button>
+
+    <div class="timeline">
+      <span class="amplitude-current-time">0:00</span>
+      <input type="range"
+             class="amplitude-song-slider"
+             step=".1"/>
+      <span class="amplitude-duration-time">0:00</span>
+    </div>
+
+    <div class="volume">
+      🔊
+      <input type="range"
+             class="amplitude-volume-slider"
+             step=".01"
+             min="0"
+             max="1" />
+    </div>
+  </footer>
+</div>
+
+<script>
+  // 1) SONG DATA: wired to your renamed mp3 + artwork.
+  // Fill verseKey, verseText, notes later if you want.
+  const SONGS = [
+    {
+      name: "In The Beginning",
+      artist: "BLE4CH",
+      url: "audio/01-in-the-beginning.mp3",
+      cover_art_url: "art/01-in-the-beginning.jpg",
+      verseRef: "",
+      verseKey: "",
+      verseText: "",
+      notes: ""
+    },
+    {
+      name: "The Fall",
+      artist: "BLE4CH",
+      url: "audio/02-the-fall.mp3",
+      cover_art_url: "art/02-the-fall.jpg",
+      verseRef: "",
+      verseKey: "",
+      verseText: "",
+      notes: ""
+    },
+    {
+      name: "Brothers Keeper",
+      artist: "BLE4CH",
+      url: "audio/03-brothers-keeper.mp3",
+      cover_art_url: "art/03-brothers-keeper.jpg",
+      verseRef: "",
+      verseKey: "",
+      verseText: "",
+      notes: ""
+    },
+    {
+      name: "The Flood",
+      artist: "BLE4CH",
+      url: "audio/04-the-flood.mp3",
+      cover_art_url: "art/04-the-flood.jpg",
+      verseRef: "",
+      verseKey: "",
+      verseText: "",
+      notes: ""
+    },
+    {
+      name: "The Tower",
+      artist: "BLE4CH",
+      url: "audio/05-the-tower.mp3",
+      cover_art_url: "art/05-the-tower.jpg",
+      verseRef: "",
+      verseKey: "",
+      verseText: "",
+      notes: ""
+    },
+    {
+      name: "Fire on Moriah",
+      artist: "BLE4CH",
+      url: "audio/06-fire-on-moriah.mp3",
+      cover_art_url: "art/06-fire-on-moriah.jpg",
+      verseRef: "",
+      verseKey: "",
+      verseText: "",
+      notes: ""
+    },
+    {
+      name: "Journey of Joseph",
+      artist: "BLE4CH",
+      url: "audio/07-journey-of-joseph.mp3",
+      cover_art_url: "art/07-journey-of-joseph.jpg",
+      verseRef: "",
+      verseKey: "",
+      verseText: "",
+      notes: ""
+    },
+    {
+      name: "Let My People Go",
+      artist: "BLE4CH",
+      url: "audio/08-let-my-people-go.mp3",
+      cover_art_url: "art/08-let-my-people-go.jpg",
+      verseRef: "",
+      verseKey: "",
+      verseText: "",
+      notes: ""
+    },
+    {
+      name: "The Mountain",
+      artist: "BLE4CH",
+      url: "audio/09-the-mountain.mp3",
+      cover_art_url: "art/09-the-mountain.jpg",
+      verseRef: "",
+      verseKey: "",
+      verseText: "",
+      notes: ""
+    },
+    {
+      name: "Joshua and Caleb",
+      artist: "BLE4CH",
+      url: "audio/10-joshua-and-caleb.mp3",
+      cover_art_url: "art/10-joshua-and-caleb.jpg",
+      verseRef: "",
+      verseKey: "",
+      verseText: "",
+      notes: ""
+    },
+    {
+      name: "Walls Fall",
+      artist: "BLE4CH",
+      url: "audio/11-walls-fall.mp3",
+      cover_art_url: "art/11-walls-fall.jpg",
+      verseRef: "",
+      verseKey: "",
+      verseText: "",
+      notes: ""
+    },
+    {
+      name: "David and Goliath",
+      artist: "BLE4CH",
+      url: "audio/12-david-and-goliath.mp3",
+      cover_art_url: "art/12-david-and-goliath.jpg",
+      verseRef: "",
+      verseKey: "",
+      verseText: "",
+      notes: ""
+    },
+    {
+      name: "We Will Not Bow",
+      artist: "BLE4CH",
+      url: "audio/13-we-will-not-bow.mp3",
+      cover_art_url: "art/13-we-will-not-bow.jpg",
+      verseRef: "",
+      verseKey: "",
+      verseText: "",
+      notes: ""
+    },
+    {
+      name: "Lions Den",
+      artist: "BLE4CH",
+      url: "audio/14-lions-den.mp3",
+      cover_art_url: "art/14-lions-den.jpg",
+      verseRef: "",
+      verseKey: "",
+      verseText: "",
+      notes: ""
+    },
+    {
+      name: "The Temple",
+      artist: "BLE4CH",
+      url: "audio/15-the-temple.mp3",
+      cover_art_url: "art/15-the-temple.jpg",
+      verseRef: "",
+      verseKey: "",
+      verseText: "",
+      notes: ""
+    },
+    {
+      name: "Glory",
+      artist: "BLE4CH",
+      url: "audio/16-glory.mp3",
+      cover_art_url: "art/16-glory.jpg",
+      verseRef: "",
+      verseKey: "",
+      verseText: "",
+      notes: ""
+    },
+    {
+      name: "Wheat and Tares",
+      artist: "BLE4CH",
+      url: "audio/17-wheat-and-tares.mp3",
+      cover_art_url: "art/17-wheat-and-tares.jpg",
+      verseRef: "",
+      verseKey: "",
+      verseText: "",
+      notes: ""
+    },
+    {
+      name: "The Lost Sheep",
+      artist: "BLE4CH",
+      url: "audio/18-the-lost-sheep.mp3",
+      cover_art_url: "art/18-the-lost-sheep.jpg",
+      verseRef: "",
+      verseKey: "",
+      verseText: "",
+      notes: ""
+    },
+    {
+      name: "Prodigal Son",
+      artist: "BLE4CH",
+      url: "audio/19-prodigal-son.mp3",
+      cover_art_url: "art/19-prodigal-son.jpg",
+      verseRef: "",
+      verseKey: "",
+      verseText: "",
+      notes: ""
+    },
+    {
+      name: "It is Finished",
+      artist: "BLE4CH",
+      url: "audio/20-it-is-finished.mp3",
+      cover_art_url: "art/20-it-is-finished.jpg",
+      verseRef: "",
+      verseKey: "",
+      verseText: "",
+      notes: ""
+    },
+    {
+      name: "He is Risen",
+      artist: "BLE4CH",
+      url: "audio/21-he-is-risen.mp3",
+      cover_art_url: "art/21-he-is-risen.jpg",
+      verseRef: "",
+      verseKey: "",
+      verseText: "",
+      notes: ""
+    },
+    {
+      name: "Wind and Flame",
+      artist: "BLE4CH",
+      url: "audio/22-wind-and-flame.mp3",
+      cover_art_url: "art/22-wind-and-flame.jpg",
+      verseRef: "",
+      verseKey: "",
+      verseText: "",
+      notes: ""
+    },
+    {
+      name: "Martyr",
+      artist: "BLE4CH",
+      url: "audio/23-martyr.mp3",
+      cover_art_url: "art/23-martyr.jpg",
+      verseRef: "",
+      verseKey: "",
+      verseText: "",
+      notes: ""
+    },
+    {
+      name: "Prison Song",
+      artist: "BLE4CH",
+      url: "audio/24-prison-song.mp3",
+      cover_art_url: "art/24-prison-song.jpg",
+      verseRef: "",
+      verseKey: "",
+      verseText: "",
+      notes: ""
+    },
+    {
+      name: "Four Horsemen",
+      artist: "BLE4CH",
+      url: "audio/25-four-horsemen.mp3",
+      cover_art_url: "art/25-four-horsemen.jpg",
+      verseRef: "",
+      verseKey: "",
+      verseText: "",
+      notes: ""
+    },
+    {
+      name: "Cast Down",
+      artist: "BLE4CH",
+      url: "audio/26-cast-down.mp3",
+      cover_art_url: "art/26-cast-down.jpg",
+      verseRef: "",
+      verseKey: "",
+      verseText: "",
+      notes: ""
+    },
+    {
+      name: "Faithful and True",
+      artist: "BLE4CH",
+      url: "audio/27-faithful-and-true.mp3",
+      cover_art_url: "art/27-faithful-and-true.jpg",
+      verseRef: "",
+      verseKey: "",
+      verseText: "",
+      notes: ""
+    }
+  ];
+
+  // 2) Initialize Amplitude
+  Amplitude.init({
+    songs: SONGS
+  });
+
+  // 3) UI updater
+  function updateUIFromActiveSong() {
+    const meta = Amplitude.getActiveSongMetadata();
+    const artImage = document.getElementById("artImage");
+    const trackTitleEl = document.getElementById("trackTitle");
+    const trackRefEl = document.getElementById("trackRef");
+    const verseRefEl = document.getElementById("verseRef");
+    const verseTextEl = document.getElementById("verseText");
+    const verseNotesEl = document.getElementById("verseNotes");
+
+    if (!meta) {
+      // fallback to album cover / default text
+      artImage.src = "art/00-heavy-metal-holy-bible-cover.jpg";
+      trackTitleEl.textContent = "Select a Track";
+      trackRefEl.textContent = "Heavy Metal Holy Bible";
+      verseRefEl.textContent = "—";
+      verseTextEl.textContent = "Select a track to see the key verse and commentary.";
+      verseNotesEl.textContent = "You can fill in specific verses and notes for each song inside the SONGS array in the code.";
+      return;
+    }
+
+    artImage.src = meta.cover_art_url || "art/00-heavy-metal-holy-bible-cover.jpg";
+    trackTitleEl.textContent = meta.name || "";
+    trackRefEl.textContent = meta.verseRef || meta.name || "";
+
+    verseRefEl.textContent = meta.verseKey || "—";
+    verseTextEl.textContent = meta.verseText || "Verse text coming soon.";
+    verseNotesEl.textContent = meta.notes || "You can add commentary for this track in the SONGS array.";
+  }
+
+  // Initial state
+  updateUIFromActiveSong();
+
+  // Update whenever the song changes
+  Amplitude.bind("song_change", function () {
+    updateUIFromActiveSong();
+  });
+</script>
+
+</body>
+</html>
