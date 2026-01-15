@@ -950,33 +950,36 @@
   ];
 
   // 2) UI updater
-  function updateUIFromActiveSong() {
-    const meta = Amplitude.getActiveSongMetadata();
-    const artImage     = document.getElementById("artImage");
-    const trackTitleEl = document.getElementById("trackTitle");
-    const trackRefEl   = document.getElementById("trackRef");
-    const verseRefEl   = document.getElementById("verseRef");
-    const verseTextEl  = document.getElementById("verseText");
-    const verseNotesEl = document.getElementById("verseNotes");
+function updateUIFromActiveSong() {
+  const meta = Amplitude.getActiveSongMetadata();
+  const artImage     = document.getElementById("artImage");
+  const trackTitleEl = document.getElementById("trackTitle");
+  const trackRefEl   = document.getElementById("trackRef");
+  const verseRefEl   = document.getElementById("verseRef");
+  const verseTextEl  = document.getElementById("verseText");
+  const verseNotesEl = document.getElementById("verseNotes");
 
-    if (!meta) {
-      artImage.src              = "art/00-heavy-metal-holy-bible-cover.jpg";
-      trackTitleEl.textContent  = "Select a Track";
-      trackRefEl.textContent    = "Heavy Metal Holy Bible";
-      verseRefEl.textContent    = "—";
-      verseTextEl.textContent   = "Select a track to see the key verse and commentary.";
-      verseNotesEl.textContent  = "You can fill in specific verses and notes for each song inside the SONGS array in the code.";
-      return;
-    }
-
-    artImage.src             = meta.cover_art_url || "art/00-heavy-metal-holy-bible-cover.jpg";
-    trackTitleEl.textContent = meta.name || "";
-    trackRefEl.textContent   = meta.verseRef || meta.name || "";
-
-    verseRefEl.textContent   = meta.verseKey  || "—";
-    verseTextEl.textContent  = meta.verseText || "Verse text coming soon.";
-    verseNotesEl.textContent = meta.notes     || "You can add commentary for this track in the SONGS array.";
+  if (!meta) {
+    artImage.src              = "art/00-heavy-metal-holy-bible-cover.jpg";
+    trackTitleEl.textContent  = "Select a Track";
+    trackRefEl.textContent    = "Heavy Metal Holy Bible";
+    verseRefEl.textContent    = "—";
+    verseTextEl.textContent   = "Select a track to see the key verse and commentary.";
+    verseNotesEl.textContent  = "You can fill in specific verses and notes for each song inside the SONGS array in the code.";
+    return;
   }
+
+  artImage.src             = meta.cover_art_url || "art/00-heavy-metal-holy-bible-cover.jpg";
+  trackTitleEl.textContent = meta.name || "";
+
+  // 🔥 Now the subtitle shows verseRef or album name, not the song again
+  trackRefEl.textContent   = meta.verseRef || "Heavy Metal Holy Bible";
+
+  verseRefEl.textContent   = meta.verseKey  || "—";
+  verseTextEl.textContent  = meta.verseText || "Verse text coming soon.";
+  verseNotesEl.textContent = meta.notes     || "You can add commentary for this track in the SONGS array.";
+}
+
 
   // 3) Initialize Amplitude with callbacks
   Amplitude.init({
