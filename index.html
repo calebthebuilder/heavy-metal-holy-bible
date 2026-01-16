@@ -363,7 +363,17 @@
         linear-gradient(180deg, #1f7f3a 0, #0f4f22 50%, #062910 100%);
       border-color: rgba(0,255,120,0.9);
     }
-    
+        .btn-shuffle.btn-toggle-active {
+      box-shadow:
+        0 0 0 1px rgba(0,255,120,0.9),
+        0 0 14px rgba(0,255,120,0.8),
+        inset 0 0 10px rgba(0,0,0,0.7);
+      background:
+        radial-gradient(circle at top, rgba(255,255,255,0.3), transparent 60%),
+        linear-gradient(180deg, #1f7f3a 0, #0f4f22 50%, #062910 100%);
+      border-color: rgba(0,255,120,0.9);
+    }
+
     .play-pause {
       padding: 7px 18px;
       border-radius: 999px;
@@ -616,7 +626,7 @@
   <button class="btn amplitude-prev">&laquo;</button>
 
   <!-- SHUFFLE -->
-  <button class="btn" id="btnShuffle">🔀</button>
+ <button class="btn btn-shuffle" id="btnShuffle">🔀 SHUFFLE</button>
 
   <!-- GLOBAL PLAY/PAUSE -->
   <button class="btn play-pause amplitude-play-pause">
@@ -969,35 +979,32 @@ function updateUIFromActiveSong() {
     }
   });
 
-  // SHUFFLE BUTTON TOGGLE
+    // SHUFFLE BUTTON TOGGLE
   const shuffleBtn = document.getElementById('btnShuffle');
   let isShuffleOn = false;
 
-  function renderShuffleState() {
-    if (!shuffleBtn) return;
-
+  if (shuffleBtn) {
+    // Ensure initial label
     shuffleBtn.textContent = '🔀 SHUFFLE';
 
-    if (isShuffleOn) {
-      shuffleBtn.classList.add('btn-toggle-active');
-    } else {
-      shuffleBtn.classList.remove('btn-toggle-active');
-    }
-  }
-
-  if (shuffleBtn) {
     shuffleBtn.addEventListener('click', function () {
       isShuffleOn = !isShuffleOn;
+
+      // Turn Amplitude shuffle on/off
       Amplitude.setShuffle(isShuffleOn);
-      renderShuffleState();
+
+      if (isShuffleOn) {
+        shuffleBtn.classList.add('btn-toggle-active');   // add green glow
+      } else {
+        shuffleBtn.classList.remove('btn-toggle-active'); // remove glow
+      }
     });
   }
-
-  renderShuffleState();
 
   // No initial update call here on purpose.
   // We want to keep the HTML default: 00 artwork + "Select a Track".
 </script>
+
 
 
 </body>
