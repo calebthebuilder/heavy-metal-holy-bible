@@ -242,6 +242,12 @@
       letter-spacing: 0.14em;
       text-transform: uppercase;
     }
+	  
+    /* Make the verse under the artwork tappable */
+       #trackRef {
+       cursor: pointer;
+       text-decoration: underline;
+     }
 
     /* RIGHT: BIBLE VERSE PANEL */
     .verse-panel {
@@ -1206,6 +1212,23 @@ GENESIS 9
       }
     });
   }
+	// LINK THE SMALL VERSE UNDER ARTWORK TO THE VERSE PANEL
+const trackRefTopEl = document.getElementById("trackRef");
+const versePanelEl  = document.querySelector(".verse-panel");
+
+if (trackRefTopEl && verseRefEl && versePanelEl) {
+  trackRefTopEl.addEventListener("click", function () {
+    // 1) Reuse existing toggle behavior
+    verseRefEl.click();
+
+    // 2) Scroll the verse panel into view so they see it open
+    versePanelEl.scrollIntoView({
+      behavior: "smooth",
+      block: "center"
+    });
+  });
+}
+
 </script>
 
 </body>
