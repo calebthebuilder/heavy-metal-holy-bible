@@ -995,6 +995,7 @@ function updateUIFromActiveSong() {
       // 3) Initialize Amplitude with callbacks
   Amplitude.init({
     songs: SONGS,
+    volume: 100,          // start at full volume (100%)
     autoplay: false,      // do NOT auto-play on load
     // Note: we don't set start_song here; default is fine
     callbacks: {
@@ -1009,7 +1010,7 @@ function updateUIFromActiveSong() {
     }
   });
 // Force volume to max on load
-  Amplitude.setVolume(1);
+  Amplitude.setVolume(100);
 
   // No initial update call here on purpose.
   // We want to keep the HTML default: 00 artwork + "Select a Track".
