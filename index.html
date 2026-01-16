@@ -621,15 +621,15 @@
       </div>
 
       <!-- CONTROLS: moved up closer to the action -->
-      <div class="controls-bar">
+     <div class="controls-bar">
   <!-- PREV -->
   <button class="btn amplitude-prev">&laquo;</button>
 
   <!-- SHUFFLE -->
- <button class="btn btn-shuffle" id="btnShuffle">🔀 SHUFFLE</button>
+  <button class="btn" id="btnShuffle">🔀 Shuffle</button>
 
-  <!-- GLOBAL PLAY/PAUSE -->
-  <button class="btn play-pause amplitude-play-pause">
+  <!-- GLOBAL PLAY/PAUSE (custom handler) -->
+  <button class="btn play-pause" id="btnPlayPause">
     ▶︎ / ❚❚
   </button>
 
@@ -933,78 +933,103 @@
   ];
 
   // 2) UI updater
-function updateUIFromActiveSong() {
-  const meta = Amplitude.getActiveSongMetadata();
-  const artImage     = document.getElementById("artImage");
-  const trackTitleEl = document.getElementById("trackTitle");
-  const trackRefEl   = document.getElementById("trackRef");
-  const verseRefEl   = document.getElementById("verseRef");
-  const verseTextEl  = document.getElementById("verseText");
-  const verseNotesEl = document.getElementById("verseNotes");
+  function updateUIFromActiveSong() {
+    const meta = Amplitude.getActiveSongMetadata();
+    const artImage     = document.getElementById("artImage");
+    const trackTitleEl = document.getElementById("trackTitle");
+    const trackRefEl   = document.getElementById("trackRef");
+    const verseRefEl   = document.getElementById("verseRef");
+    const verseTextEl  = document.getElementById("verseText");
+    const verseNotesEl = document.getElementById("verseNotes");
 
-  if (!meta) {
-    artImage.src              = "art/00-heavy-metal-holy-bible-cover.jpg";
-    trackTitleEl.textContent  = "Select a Track";
-    trackRefEl.textContent    = "Heavy Metal Holy Bible";
-    verseRefEl.textContent    = "—";
-    verseTextEl.textContent   = "Select a track to see the key verse and commentary.";
-    verseNotesEl.textContent  = "You can fill in specific verses and notes for each song inside the SONGS array in the code.";
-    return;
+    if (!meta) {
+      artImage.src              = "art/00-heavy-metal-holy-bible-cover.jpg";
+      trackTitleEl.textContent  = "Select a Track";
+      trackRefEl.textContent    = "Heavy Metal Holy Bible";
+      verseRefEl.textContent    = "—";
+      verseTextEl.textContent   = "Select a track to see the key verse and commentary.";
+      verseNotesEl.textContent  = "You can fill in specific verses and notes for each song inside the SONGS array in the code.";
+      return;
+    }
+
+    artImage.src             = meta.cover_art_url || "art/00-heavy-metal-holy-bible-cover.jpg";
+    trackTitleEl.textContent = meta.name || "";
+    trackRefEl.textContent   = meta.verseRef || "Heavy Metal Holy Bible";
+
+    verseRefEl.textContent   = meta.verseKey  || "—";
+    verseTextEl.textContent  = meta.verseText || "Verse text coming soon.";
+    verseNotesEl.textContent = meta.notes     || "You can add commentary for this track in the SONGS array.";
   }
 
-  artImage.src             = meta.cover_art_url || "art/00-heavy-metal-holy-bible-cover.jpg";
-  trackTitleEl.textContent = meta.name || "";
+  // Track whether we've started at least once
+  let hasStartedOnce = false;
 
-  // 🔥 Now the subtitle shows verseRef or album name, not the song again
-  trackRefEl.textContent   = meta.verseRef || "Heavy Metal Holy Bible";
-
-  verseRefEl.textContent   = meta.verseKey  || "—";
-  verseTextEl.textContent  = meta.verseText || "Verse text coming soon.";
-  verseNotesEl.textContent = meta.notes     || "You can add commentary for this track in the SONGS array.";
-}
-
-
-        // 3) Initialize Amplitude with callbacks
+  // 3) Initialize Amplitude with callbacks
   Amplitude.init({
     songs: SONGS,
-    volume: 100,
-    autoplay: false,
+    volume: 100,          // start at full volume
+    autoplay: false,      // do NOT auto-play on load
     callbacks: {
       song_change: function () {
         updateUIFromActiveSong();
+        hasStartedOnce = true;
       },
       play: function () {
         updateUIFromActiveSong();
+        hasStartedOnce = true;
       }
     }
   });
 
-    // SHUFFLE BUTTON TOGGLE
+  // Force volume to max on load
+  Amplitude.setVolume(100);
+
+  // SHUFFLE BUTTON TOGGLE
   const shuffleBtn = document.getElementById('btnShuffle');
-  let isShuffleOn = false;
-
   if (shuffleBtn) {
-    // Ensure initial label
-    shuffleBtn.textContent = '🔀 SHUFFLE';
-
     shuffleBtn.addEventListener('click', function () {
-      isShuffleOn = !isShuffleOn;
+      const currentlyOn = Amplitude.getShuffle();
+      const newState = !currentlyOn;
 
-      // Turn Amplitude shuffle on/off
-      Amplitude.setShuffle(isShuffleOn);
+      Amplitude.setShuffle(newState);
 
-      if (isShuffleOn) {
-        shuffleBtn.classList.add('btn-toggle-active');   // add green glow
-      } else {
-        shuffleBtn.classList.remove('btn-toggle-active'); // remove glow
-      }
+      // Visually show toggle state
+      shuffleBtn.classList.toggle('btn-toggle-active', newState);
     });
   }
 
-  // No initial update call here on purpose.
-  // We want to keep the HTML default: 00 artwork + "Select a Track".
-</script>
+  // CUSTOM PLAY / PAUSE BUTTON
+  const playBtn = document.getElementById('btnPlayPause');
+  if (playBtn) {
+    playBtn.addEventListener('click', function () {
+      const playerState = Amplitude.getPlayerState(); // "playing", "paused", "stopped"
 
+      // If already playing, this acts as pause
+      if (playerState === 'playing') {
+        Amplitude.pause();
+        return;
+      }
+
+      const shuffleOn = Amplitude.getShuffle();
+
+      // First ever start and shuffle ON → start at random track
+      if (!hasStartedOnce && shuffleOn) {
+        const randomIndex = Math.floor(Math.random() * SONGS.length);
+        Amplitude.playSongAtIndex(randomIndex);
+      }
+      // First ever start and shuffle OFF → start at track 0
+      else if (!hasStartedOnce && !shuffleOn) {
+        Amplitude.playSongAtIndex(0);
+      }
+      // After first start, just resume whatever is active
+      else {
+        Amplitude.play();
+      }
+
+      hasStartedOnce = true;
+    });
+  }
+</script>
 
 
 </body>
