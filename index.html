@@ -192,37 +192,36 @@
       display: none; /* hide extra line to save vertical space */
     }
 
-      /* CENTER: ARTWORK */
-.art-panel {
-  padding: 18px 18px 12px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;  /* 👈 changed from space-between */
-  background:
-    radial-gradient(circle at top, rgba(255,255,255,0.05), transparent 55%);
-  min-height: 0;
-}
+    /* CENTER: ARTWORK */
+    .art-panel {
+      padding: 18px 18px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      background:
+        radial-gradient(circle at top, rgba(255,255,255,0.05), transparent 55%);
+      min-height: 0;
+    }
 
-.art-frame {
-  width: 100%;
-  max-width: 360px;      /* you can adjust this smaller or bigger */
-  border-radius: 6px;
-  overflow: hidden;
-  border: 3px solid #2f3138;
-  box-shadow:
-    0 18px 38px rgba(0,0,0,0.95),
-    0 0 26px rgba(0,0,0,0.9);
-  background: #050506;
-}
+    .art-frame {
+      width: 100%;
+      max-width: 360px;      /* you can adjust this smaller or bigger */
+      border-radius: 6px;
+      overflow: hidden;
+      border: 3px solid #2f3138;
+      box-shadow:
+        0 18px 38px rgba(0,0,0,0.95),
+        0 0 26px rgba(0,0,0,0.9);
+      background: #050506;
+    }
 
-.art-frame img {
-  display: block;
-  width: 100%;
-  height: auto;          /* ← auto height = no cropping and no gaps */
-  object-fit: cover;      /* image fills width properly */
-}
-
+    .art-frame img {
+      display: block;
+      width: 100%;
+      height: auto;          /* auto height = no cropping and no gaps */
+      object-fit: cover;     /* image fills width properly */
+    }
 
     .track-meta {
       margin-top: 16px;
@@ -282,24 +281,48 @@
       margin-bottom: 6px;
     }
 
+    .verse-key {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #f7f3ea;
+    }
+
     .verse-ref {
       font-weight: 700;
       margin-bottom: 8px;
       color: #f7f3ea;
     }
 
+    .verse-ref-clickable {
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--accent-soft);
+    }
+
+    .verse-ref-clickable::after {
+      content: "▾";
+      font-size: 11px;
+      opacity: 0.8;
+    }
+
+    .verse-ref-clickable.verse-ref-open::after {
+      content: "▴";
+    }
+
     .verse-text {
       font-style: italic;
       color: #e4ded2;
+      margin-top: 4px;
     }
 
-    .verse-notes {
-      margin-top: 10px;
-      font-size: 12px;
-      color: var(--text-muted);
+    .verse-text-collapsed {
+      display: none;
     }
 
-        /* TRANSPORT BAR (now sits under artwork) */
+    /* TRANSPORT BAR (now sits under artwork) */
     .controls-bar {
       margin-top: 16px;
       width: 100%;
@@ -316,7 +339,6 @@
         0 10px 22px rgba(0,0,0,0.8),
         inset 0 0 10px rgba(0,0,0,0.6);
     }
-
 
     .btn {
       border: none;
@@ -353,7 +375,8 @@
         0 1px 3px rgba(0,0,0,0.85),
         inset 0 0 4px rgba(255,255,255,0.05);
     }
-        .btn-toggle-active {
+
+    .btn-toggle-active {
       box-shadow:
         0 0 0 1px rgba(0,255,120,0.9),
         0 0 14px rgba(0,255,120,0.8),
@@ -363,7 +386,8 @@
         linear-gradient(180deg, #1f7f3a 0, #0f4f22 50%, #062910 100%);
       border-color: rgba(0,255,120,0.9);
     }
-        .btn-shuffle.btn-toggle-active {
+
+    .btn-shuffle.btn-toggle-active {
       box-shadow:
         0 0 0 1px rgba(0,255,120,0.9),
         0 0 14px rgba(0,255,120,0.8),
@@ -386,7 +410,7 @@
         linear-gradient(180deg, #b13419 0, #701808 60%, #300604 100%);
     }
 
-        .timeline {
+    .timeline {
       flex: 1;
       display: flex;
       align-items: center;
@@ -394,65 +418,65 @@
       font-size: 11px;
       color: var(--text-muted);
     }
-    
-   @media (max-width: 900px) {
-  /* Layout should start at the top, not be vertically centered */
-  body {
-    align-items: flex-start;
-    padding: 8px 0;
-  }
 
-  /* Let the full app scroll normally (not clipped at 95vh) */
-  .app-shell {
-    max-height: none;
-    height: auto;
-    overflow: visible;
-  }
+    @media (max-width: 900px) {
+      /* Layout should start at the top, not be vertically centered */
+      body {
+        align-items: flex-start;
+        padding: 8px 0;
+      }
 
-  .main-layout {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto auto;
-  }
+      /* Let the full app scroll normally (not clipped at 95vh) */
+      .app-shell {
+        max-height: none;
+        height: auto;
+        overflow: visible;
+      }
 
-  .panel,
-  .verse-panel {
-    border-right: none;
-    border-left: none;
-    border-bottom: 2px solid #262930;
-    box-shadow: none;
-  }
+      .main-layout {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+      }
 
-  .art-panel {
-    order: -1;  /* put artwork FIRST on mobile */
-    padding: 10px 12px 4px;
-  }
+      .panel,
+      .verse-panel {
+        border-right: none;
+        border-left: none;
+        border-bottom: 2px solid #262930;
+        box-shadow: none;
+      }
 
-  /* 🔥 SHRINK THE ARTWORK — THIS IS THE KEY FIX */
-  .art-frame {
-    max-width: 180px;    /* SMALL thumbnail-size artwork */
-    margin: 0 auto;
-    border-width: 2px;
-  }
+      .art-panel {
+        order: -1;  /* put artwork FIRST on mobile */
+        padding: 10px 12px 4px;
+      }
 
-  .art-frame img {
-    width: 100%;
-    height: auto;
-    object-fit: contain; /* show the whole picture, no cropping */
-  }
+      /* Shrink artwork on mobile */
+      .art-frame {
+        max-width: 180px;    /* SMALL thumbnail-size artwork */
+        margin: 0 auto;
+        border-width: 2px;
+      }
 
-  /* Reduce track title spacing under artwork */
-  .track-meta {
-    margin-top: 8px;
-  }
+      .art-frame img {
+        width: 100%;
+        height: auto;
+        object-fit: contain; /* show the whole picture, no cropping */
+      }
 
-  .track-meta-title {
-    font-size: 16px;
-  }
+      /* Reduce track title spacing under artwork */
+      .track-meta {
+        margin-top: 8px;
+      }
 
-  .track-meta-ref {
-    font-size: 10px;
-  }
-}
+      .track-meta-title {
+        font-size: 16px;
+      }
+
+      .track-meta-ref {
+        font-size: 10px;
+      }
+    }
 
   </style>
 
@@ -609,7 +633,7 @@
       </ul>
     </aside>
 
-        <!-- CENTER: ARTWORK + CONTROLS -->
+    <!-- CENTER: ARTWORK + CONTROLS -->
     <section class="art-panel">
       <div class="art-frame">
         <img id="artImage" src="art/00-heavy-metal-holy-bible-cover.jpg" alt="Track artwork">
@@ -621,36 +645,41 @@
       </div>
 
       <!-- CONTROLS: moved up closer to the action -->
-     <div class="controls-bar">
-  <!-- PREV -->
-  <button class="btn amplitude-prev">&laquo;</button>
+      <div class="controls-bar">
+        <!-- PREV -->
+        <button class="btn amplitude-prev">&laquo;</button>
 
-  <!-- SHUFFLE -->
-<button class="btn btn-shuffle" id="btnShuffle">🔀 SHUFFLE</button>
+        <!-- SHUFFLE -->
+        <button class="btn btn-shuffle" id="btnShuffle">🔀 SHUFFLE</button>
 
-  <!-- GLOBAL PLAY/PAUSE (custom handler) -->
-  <button class="btn play-pause" id="btnPlayPause">
-    ▶︎ / ❚❚
-  </button>
+        <!-- GLOBAL PLAY/PAUSE (custom handler) -->
+        <button class="btn play-pause" id="btnPlayPause">
+          ▶︎ / ❚❚
+        </button>
 
-  <!-- NEXT -->
-  <button class="btn amplitude-next">&raquo;</button>
-</div>
-
+        <!-- NEXT -->
+        <button class="btn amplitude-next">&raquo;</button>
+      </div>
     </section>
 
-    <!-- RIGHT: VERSE / NOTES -->
+    <!-- RIGHT: VERSE / NOTES (simplified) -->
     <aside class="verse-panel">
       <div class="panel-header">Bible Verse</div>
       <div class="verse-body">
         <div id="verseLabel" class="verse-label">Key Passage</div>
-        <div id="verseRef" class="verse-ref">—</div>
-        <div id="verseText" class="verse-text">
-          Select a track to see the key verse and commentary.
+
+        <!-- Short summary line -->
+        <div id="verseKey" class="verse-key">
+          Select a track to see the key passage.
         </div>
-        <div id="verseNotes" class="verse-notes">
-          You can fill in specific verses and notes for each song inside the SONGS array in the code.
+
+        <!-- Clickable reference that toggles the verse text -->
+        <div id="verseRef" class="verse-ref verse-ref-clickable">
+          Tap to open verse
         </div>
+
+        <!-- Full verse text (starts collapsed / hidden) -->
+        <div id="verseText" class="verse-text verse-text-collapsed"></div>
       </div>
     </aside>
 
@@ -667,8 +696,7 @@
       cover_art_url: "art/01-in-the-beginning.jpg",
       verseRef: "",
       verseKey: "",
-      verseText: "",
-      notes: ""
+      verseText: ""
     },
     {
       name: "The Fall",
@@ -677,8 +705,7 @@
       cover_art_url: "art/02-the-fall.jpg",
       verseRef: "",
       verseKey: "",
-      verseText: "",
-      notes: ""
+      verseText: ""
     },
     {
       name: "Brothers Keeper",
@@ -687,8 +714,7 @@
       cover_art_url: "art/03-brothers-keeper.jpg",
       verseRef: "",
       verseKey: "",
-      verseText: "",
-      notes: ""
+      verseText: ""
     },
     {
       name: "The Flood",
@@ -697,8 +723,7 @@
       cover_art_url: "art/04-the-flood.jpg",
       verseRef: "",
       verseKey: "",
-      verseText: "",
-      notes: ""
+      verseText: ""
     },
     {
       name: "The Tower",
@@ -707,8 +732,7 @@
       cover_art_url: "art/05-the-tower.jpg",
       verseRef: "",
       verseKey: "",
-      verseText: "",
-      notes: ""
+      verseText: ""
     },
     {
       name: "Fire on Moriah",
@@ -717,8 +741,7 @@
       cover_art_url: "art/06-fire-on-moriah.jpg",
       verseRef: "",
       verseKey: "",
-      verseText: "",
-      notes: ""
+      verseText: ""
     },
     {
       name: "Journey of Joseph",
@@ -727,8 +750,7 @@
       cover_art_url: "art/07-journey-of-joseph.jpg",
       verseRef: "",
       verseKey: "",
-      verseText: "",
-      notes: ""
+      verseText: ""
     },
     {
       name: "Let My People Go",
@@ -737,8 +759,7 @@
       cover_art_url: "art/08-let-my-people-go.jpg",
       verseRef: "",
       verseKey: "",
-      verseText: "",
-      notes: ""
+      verseText: ""
     },
     {
       name: "The Mountain",
@@ -747,8 +768,7 @@
       cover_art_url: "art/09-the-mountain.jpg",
       verseRef: "",
       verseKey: "",
-      verseText: "",
-      notes: ""
+      verseText: ""
     },
     {
       name: "Joshua and Caleb",
@@ -757,8 +777,7 @@
       cover_art_url: "art/10-joshua-and-caleb.jpg",
       verseRef: "",
       verseKey: "",
-      verseText: "",
-      notes: ""
+      verseText: ""
     },
     {
       name: "Walls Fall",
@@ -767,8 +786,7 @@
       cover_art_url: "art/11-walls-fall.jpg",
       verseRef: "",
       verseKey: "",
-      verseText: "",
-      notes: ""
+      verseText: ""
     },
     {
       name: "David and Goliath",
@@ -777,8 +795,7 @@
       cover_art_url: "art/12-david-and-goliath.jpg",
       verseRef: "",
       verseKey: "",
-      verseText: "",
-      notes: ""
+      verseText: ""
     },
     {
       name: "We Will Not Bow",
@@ -787,8 +804,7 @@
       cover_art_url: "art/13-we-will-not-bow.jpg",
       verseRef: "",
       verseKey: "",
-      verseText: "",
-      notes: ""
+      verseText: ""
     },
     {
       name: "Lions Den",
@@ -797,8 +813,7 @@
       cover_art_url: "art/14-lions-den.jpg",
       verseRef: "",
       verseKey: "",
-      verseText: "",
-      notes: ""
+      verseText: ""
     },
     {
       name: "The Temple",
@@ -807,8 +822,7 @@
       cover_art_url: "art/15-the-temple.jpg",
       verseRef: "",
       verseKey: "",
-      verseText: "",
-      notes: ""
+      verseText: ""
     },
     {
       name: "Glory",
@@ -817,8 +831,7 @@
       cover_art_url: "art/16-glory.jpg",
       verseRef: "",
       verseKey: "",
-      verseText: "",
-      notes: ""
+      verseText: ""
     },
     {
       name: "Wheat and Tares",
@@ -827,8 +840,7 @@
       cover_art_url: "art/17-wheat-and-tares.jpg",
       verseRef: "",
       verseKey: "",
-      verseText: "",
-      notes: ""
+      verseText: ""
     },
     {
       name: "The Lost Sheep",
@@ -837,8 +849,7 @@
       cover_art_url: "art/18-the-lost-sheep.jpg",
       verseRef: "",
       verseKey: "",
-      verseText: "",
-      notes: ""
+      verseText: ""
     },
     {
       name: "Prodigal Son",
@@ -847,8 +858,7 @@
       cover_art_url: "art/19-prodigal-son.jpg",
       verseRef: "",
       verseKey: "",
-      verseText: "",
-      notes: ""
+      verseText: ""
     },
     {
       name: "It is Finished",
@@ -857,8 +867,7 @@
       cover_art_url: "art/20-it-is-finished.jpg",
       verseRef: "",
       verseKey: "",
-      verseText: "",
-      notes: ""
+      verseText: ""
     },
     {
       name: "He is Risen",
@@ -867,8 +876,7 @@
       cover_art_url: "art/21-he-is-risen.jpg",
       verseRef: "",
       verseKey: "",
-      verseText: "",
-      notes: ""
+      verseText: ""
     },
     {
       name: "Wind and Flame",
@@ -877,8 +885,7 @@
       cover_art_url: "art/22-wind-and-flame.jpg",
       verseRef: "",
       verseKey: "",
-      verseText: "",
-      notes: ""
+      verseText: ""
     },
     {
       name: "Martyr",
@@ -887,8 +894,7 @@
       cover_art_url: "art/23-martyr.jpg",
       verseRef: "",
       verseKey: "",
-      verseText: "",
-      notes: ""
+      verseText: ""
     },
     {
       name: "Prison Song",
@@ -897,8 +903,7 @@
       cover_art_url: "art/24-prison-song.jpg",
       verseRef: "",
       verseKey: "",
-      verseText: "",
-      notes: ""
+      verseText: ""
     },
     {
       name: "Four Horsemen",
@@ -907,8 +912,7 @@
       cover_art_url: "art/25-four-horsemen.jpg",
       verseRef: "",
       verseKey: "",
-      verseText: "",
-      notes: ""
+      verseText: ""
     },
     {
       name: "Cast Down",
@@ -917,8 +921,7 @@
       cover_art_url: "art/26-cast-down.jpg",
       verseRef: "",
       verseKey: "",
-      verseText: "",
-      notes: ""
+      verseText: ""
     },
     {
       name: "Faithful and True",
@@ -927,38 +930,64 @@
       cover_art_url: "art/27-faithful-and-true.jpg",
       verseRef: "",
       verseKey: "",
-      verseText: "",
-      notes: ""
+      verseText: ""
     }
   ];
 
-  // 2) UI updater
+  // 2) UI updater – sync artwork + titles + verse panel
   function updateUIFromActiveSong() {
-    const meta = Amplitude.getActiveSongMetadata();
+    const meta         = Amplitude.getActiveSongMetadata();
     const artImage     = document.getElementById("artImage");
     const trackTitleEl = document.getElementById("trackTitle");
-    const trackRefEl   = document.getElementById("trackRef");
-    const verseRefEl   = document.getElementById("verseRef");
-    const verseTextEl  = document.getElementById("verseText");
-    const verseNotesEl = document.getElementById("verseNotes");
+    const trackRefEl   = document.getElementById("trackRef");    // under artwork
+    const verseKeyEl   = document.getElementById("verseKey");    // summary line
+    const verseRefEl   = document.getElementById("verseRef");    // clickable ref
+    const verseTextEl  = document.getElementById("verseText");   // full verse text
 
     if (!meta) {
-      artImage.src              = "art/00-heavy-metal-holy-bible-cover.jpg";
-      trackTitleEl.textContent  = "Select a Track";
-      trackRefEl.textContent    = "Heavy Metal Holy Bible";
-      verseRefEl.textContent    = "—";
-      verseTextEl.textContent   = "Select a track to see the key verse and commentary.";
-      verseNotesEl.textContent  = "You can fill in specific verses and notes for each song inside the SONGS array in the code.";
+      // Default "no track selected" state
+      artImage.src             = "art/00-heavy-metal-holy-bible-cover.jpg";
+      trackTitleEl.textContent = "Select a Track";
+      trackRefEl.textContent   = "Heavy Metal Holy Bible";
+
+      if (verseKeyEl) {
+        verseKeyEl.textContent = "Select a track to see the key passage.";
+      }
+
+      if (verseRefEl) {
+        verseRefEl.textContent = "Tap to open verse";
+        verseRefEl.classList.remove("verse-ref-open");
+      }
+
+      if (verseTextEl) {
+        verseTextEl.textContent = "";
+        verseTextEl.classList.add("verse-text-collapsed");
+      }
       return;
     }
 
+    // Artwork + main title
     artImage.src             = meta.cover_art_url || "art/00-heavy-metal-holy-bible-cover.jpg";
     trackTitleEl.textContent = meta.name || "";
+
+    // Under-artwork small line = scripture reference
     trackRefEl.textContent   = meta.verseRef || "Heavy Metal Holy Bible";
 
-    verseRefEl.textContent   = meta.verseKey  || "—";
-    verseTextEl.textContent  = meta.verseText || "Verse text coming soon.";
-    verseNotesEl.textContent = meta.notes     || "You can add commentary for this track in the SONGS array.";
+    // Verse panel:
+    if (verseKeyEl) {
+      verseKeyEl.textContent = meta.verseKey || "Key passage";
+    }
+
+    if (verseRefEl) {
+      // Show the scripture reference as the clickable label
+      verseRefEl.textContent = meta.verseRef || "Tap to open verse";
+      verseRefEl.classList.remove("verse-ref-open");
+    }
+
+    if (verseTextEl) {
+      verseTextEl.textContent = meta.verseText || "Verse text coming soon.";
+      verseTextEl.classList.add("verse-text-collapsed");  // always start collapsed
+    }
   }
 
   // Track whether we've started at least once
@@ -984,24 +1013,24 @@
   // Force volume to max on load
   Amplitude.setVolume(100);
 
- // SHUFFLE BUTTON TOGGLE
-const shuffleBtn = document.getElementById('btnShuffle');
+  // SHUFFLE BUTTON TOGGLE
+  const shuffleBtn = document.getElementById('btnShuffle');
 
-if (shuffleBtn) {
-  // Make sure label always shows on load
-  shuffleBtn.textContent = '🔀 Shuffle';
+  if (shuffleBtn) {
+    // Make sure label always shows on load
+    shuffleBtn.textContent = '🔀 Shuffle';
 
-  shuffleBtn.addEventListener('click', function () {
-    const currentlyOn = Amplitude.getShuffle();
-    const newState = !currentlyOn;
+    shuffleBtn.addEventListener('click', function () {
+      const currentlyOn = Amplitude.getShuffle();
+      const newState    = !currentlyOn;
 
-    // Update Amplitude shuffle state
-    Amplitude.setShuffle(newState);
+      // Update Amplitude shuffle state
+      Amplitude.setShuffle(newState);
 
-    // Update glow
-    shuffleBtn.classList.toggle('btn-toggle-active', newState);
-  });
-}
+      // Update glow
+      shuffleBtn.classList.toggle('btn-toggle-active', newState);
+    });
+  }
 
   // CUSTOM PLAY / PAUSE BUTTON
   const playBtn = document.getElementById('btnPlayPause');
@@ -1034,8 +1063,24 @@ if (shuffleBtn) {
       hasStartedOnce = true;
     });
   }
-</script>
 
+  // TOGGLE VERSE TEXT ON CLICK
+  const verseRefEl  = document.getElementById("verseRef");
+  const verseTextEl = document.getElementById("verseText");
+
+  if (verseRefEl && verseTextEl) {
+    verseRefEl.addEventListener('click', function () {
+      const isCollapsed = verseTextEl.classList.contains("verse-text-collapsed");
+      if (isCollapsed) {
+        verseTextEl.classList.remove("verse-text-collapsed");
+        verseRefEl.classList.add("verse-ref-open");
+      } else {
+        verseTextEl.classList.add("verse-text-collapsed");
+        verseRefEl.classList.remove("verse-ref-open");
+      }
+    });
+  }
+</script>
 
 </body>
 </html>
