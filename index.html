@@ -626,7 +626,7 @@
   <button class="btn amplitude-prev">&laquo;</button>
 
   <!-- SHUFFLE -->
-  <button class="btn" id="btnShuffle">🔀 Shuffle</button>
+<button class="btn btn-shuffle" id="btnShuffle">🔀 SHUFFLE</button>
 
   <!-- GLOBAL PLAY/PAUSE (custom handler) -->
   <button class="btn play-pause" id="btnPlayPause">
@@ -984,19 +984,24 @@
   // Force volume to max on load
   Amplitude.setVolume(100);
 
-  // SHUFFLE BUTTON TOGGLE
-  const shuffleBtn = document.getElementById('btnShuffle');
-  if (shuffleBtn) {
-    shuffleBtn.addEventListener('click', function () {
-      const currentlyOn = Amplitude.getShuffle();
-      const newState = !currentlyOn;
+ // SHUFFLE BUTTON TOGGLE
+const shuffleBtn = document.getElementById('btnShuffle');
 
-      Amplitude.setShuffle(newState);
+if (shuffleBtn) {
+  // Make sure label always shows on load
+  shuffleBtn.textContent = '🔀 Shuffle';
 
-      // Visually show toggle state
-      shuffleBtn.classList.toggle('btn-toggle-active', newState);
-    });
-  }
+  shuffleBtn.addEventListener('click', function () {
+    const currentlyOn = Amplitude.getShuffle();
+    const newState = !currentlyOn;
+
+    // Update Amplitude shuffle state
+    Amplitude.setShuffle(newState);
+
+    // Update glow
+    shuffleBtn.classList.toggle('btn-toggle-active', newState);
+  });
+}
 
   // CUSTOM PLAY / PAUSE BUTTON
   const playBtn = document.getElementById('btnPlayPause');
