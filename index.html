@@ -1853,7 +1853,7 @@ The Rider on a White Horse -
     }
 
     if (verseTextEl) {
-      verseTextEl.textContent = meta.verseText || "Verse text coming soon.";
+      verseTextEl.innerHTML = meta.verseText || "Verse text coming soon.";
       verseTextEl.classList.add("verse-text-collapsed");  // always start collapsed
     }
   }
