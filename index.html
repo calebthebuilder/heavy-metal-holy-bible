@@ -497,6 +497,40 @@
         font-size: 10px;
       }
     }
+/* --- PWA Install Button Styles --- */
+.install-btn {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  padding: 6px 12px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+
+  background:
+    radial-gradient(circle at top, rgba(255,255,255,0.15), transparent 60%),
+    linear-gradient(180deg, #363940 0, #17191e 55%, #090a0d 100%);
+  color: #f5f2e9;
+
+  box-shadow:
+    0 2px 4px rgba(0,0,0,0.8),
+    inset 0 0 4px rgba(255,255,255,0.05);
+
+  transition: background 0.12s, transform 0.05s;
+}
+
+.install-btn:hover {
+  background:
+    radial-gradient(circle at top, rgba(255,255,255,0.22), transparent 60%),
+    linear-gradient(180deg, #444854 0, #20232b 55%, #0c0d12 100%);
+}
+
+.install-btn:active {
+  transform: translateY(1px);
+}
 
   </style>
 
@@ -505,8 +539,13 @@
 
 <div class="app-shell">
   <header class="app-header">
-    <div class="logo-sub">Heavy Metal Holy Bible</div>
-  </header>
+  <div class="logo-sub">Heavy Metal Holy Bible</div>
+
+  <!-- Install PWA Button -->
+  <button id="btnInstallPWA" class="install-btn" style="display:none;">
+    Install App
+  </button>
+</header>
 
   <div class="main-layout">
 
@@ -1614,6 +1653,53 @@ if (trackRefTopEl && verseRefEl && versePanelEl) {
         });
     });
   }
+
+// === PWA INSTALL LOGIC ===
+let deferredPrompt = null;
+const installBtn = document.getElementById("btnInstallPWA");
+
+// Detect if app is already installed
+function checkInstalled() {
+  const isStandalone =
+    window.matchMedia("(display-mode: standalone)").matches ||
+    navigator.standalone === true;
+
+  if (isStandalone) {
+    installBtn.style.display = "none";
+  } else {
+    installBtn.style.display = "inline-flex";
+  }
+}
+checkInstalled();
+
+// Capture the install prompt event
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+});
+
+// User clicks button → show actual install prompt
+installBtn.addEventListener("click", async () => {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    const result = await deferredPrompt.userChoice;
+    deferredPrompt = null;
+
+    if (result.outcome === "accepted") {
+      installBtn.style.display = "none";
+    }
+  } else {
+    alert(
+      "To install:\n\n• Open browser menu\n• Tap 'Add to Home Screen'\n\n(Some devices only show the install prompt once.)"
+    );
+  }
+});
+
+// Auto-hide once installed
+window.addEventListener("appinstalled", () => {
+  installBtn.style.display = "none";
+});
+
 </script>
 
 </body>
