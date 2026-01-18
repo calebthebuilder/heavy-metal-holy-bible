@@ -1,0 +1,21 @@
+{
+  "name": "Heavy Metal Holy Bible",
+  "short_name": "H.M.H.B.",
+  "description": "An interactive Heavy Metal journey through the Bible with music, artwork, and Scripture passages.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#050506",
+  "theme_color": "#050506",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
