@@ -1654,51 +1654,91 @@ if (trackRefTopEl && verseRefEl && versePanelEl) {
     });
   }
 
-// === PWA INSTALL LOGIC ===
-let deferredPrompt = null;
-const installBtn = document.getElementById("btnInstallPWA");
+// === PWA INSTALL LOGIC (with iOS handling) ===
+(function () {
+  const installBtn = document.getElementById("btnInstallPWA");
+  if (!installBtn) return;
 
-// Detect if app is already installed
-function checkInstalled() {
-  const isStandalone =
-    window.matchMedia("(display-mode: standalone)").matches ||
-    navigator.standalone === true;
+  const ua = navigator.userAgent.toLowerCase();
+  const isIOS    = /iphone|ipad|ipod/.test(ua);
+  const isSafari = isIOS &&
+                   /safari/.test(ua) &&
+                   !(/crios|fxios|edgios|opios/.test(ua)); // not Chrome/Firefox/Edge/Opera on iOS
 
-  if (isStandalone) {
-    installBtn.style.display = "none";
-  } else {
-    installBtn.style.display = "inline-flex";
-  }
-}
-checkInstalled();
+  let deferredPrompt = null;
 
-// Capture the install prompt event
-window.addEventListener("beforeinstallprompt", (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-});
+  // Detect if app is already installed (PWA / standalone)
+  function checkInstalled() {
+    const isStandalone =
+      window.matchMedia("(display-mode: standalone)").matches ||
+      navigator.standalone === true;
 
-// User clicks button → show actual install prompt
-installBtn.addEventListener("click", async () => {
-  if (deferredPrompt) {
-    deferredPrompt.prompt();
-    const result = await deferredPrompt.userChoice;
-    deferredPrompt = null;
-
-    if (result.outcome === "accepted") {
+    if (isStandalone) {
       installBtn.style.display = "none";
+    } else {
+      installBtn.style.display = "inline-flex";
     }
-  } else {
-    alert(
-      "To install:\n\n• Open browser menu\n• Tap 'Add to Home Screen'\n\n(Some devices only show the install prompt once.)"
-    );
   }
-});
+  checkInstalled();
 
-// Auto-hide once installed
-window.addEventListener("appinstalled", () => {
-  installBtn.style.display = "none";
-});
+  // Capture install prompt (Android / desktop)
+  window.addEventListener("beforeinstallprompt", (e) => {
+    // iOS never fires this, so ignore there
+    if (isIOS) return;
+    e.preventDefault();
+    deferredPrompt = e;
+  });
+
+  installBtn.addEventListener("click", async () => {
+    // --- iOS flows ---
+    if (isIOS) {
+      if (isSafari) {
+        // Real iOS Safari: show correct instructions
+        alert(
+          "On iPhone/iPad:\n\n" +
+          "1) Tap the Share icon (square with the up arrow).\n" +
+          "2) Scroll down and tap 'Add to Home Screen'.\n\n" +
+          "Then open 'Heavy Metal Holy Bible' from your Home Screen."
+        );
+      } else {
+        // Chrome/Firefox/etc on iOS: tell them to use Safari
+        alert(
+          "To install this app on iPhone/iPad:\n\n" +
+          "1) Open this same page in Safari.\n" +
+          "2) Tap the Share icon.\n" +
+          "3) Choose 'Add to Home Screen'.\n\n" +
+          "iOS only allows installation from Safari."
+        );
+      }
+      return;
+    }
+
+    // --- Android / desktop (real install prompt) ---
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const result = await deferredPrompt.userChoice;
+      deferredPrompt = null;
+
+      if (result.outcome === "accepted") {
+        installBtn.style.display = "none";
+      }
+    } else {
+      // Fallback if the browser already showed the prompt or doesn't support PWA install
+      alert(
+        "To install:\n\n" +
+        "• Open your browser menu\n" +
+        "• Look for 'Install app' or 'Add to Home Screen'\n\n" +
+        "(Some devices only show the install prompt once.)"
+      );
+    }
+  });
+
+  // Auto-hide once installed (Android/desktop)
+  window.addEventListener("appinstalled", () => {
+    installBtn.style.display = "none";
+  });
+})();
+
 
 </script>
 
